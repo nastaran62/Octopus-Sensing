@@ -1,7 +1,24 @@
 language: python
-python:
-    - "3.7"
-    - "3.8"
+
+jobs:
+    - name: "Python 3.7 on Linux"
+      python: 3.7
+    - name: "Python 3.8 on Linux"
+      python: 3.8
+    - name: "Python on MacOS"
+      os: osx
+      osx_image: xcode12
+      # 'language: python' is an error on Travis MacOS
+      language: shell
+
+    # PyOpenBCI and pyAudio (actually, portaudio) have issues on Windows.
+    #- name: "Python 3.8.5 on Windows"
+    #  os: windows           # Windows 10.0.17134 N/A Build 17134
+    #  language: shell       # 'language: python' is an error on Travis Windows
+    #  before_install:
+    #    - choco install python --version 3.8.5
+    #    - python -m pip install --upgrade pip
+    #  env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
 
 addons:
   apt:
@@ -9,12 +26,18 @@ addons:
       - portaudio19-dev
 
 install:
-    - pip install poetry coveralls
+    # pip3 works on all platforms in Travis
+    - pip3 install --upgrade pip
+    - pip3 --version
+    - pip3 install wheel poetry coveralls
     - poetry install -v
 
 script:
+    - poetry run python --version
     - poetry run mypy .
     - poetry run coverage run -m pytest --full-trace --showlocals
 
 after_success:
     coveralls
+
+# TODO: To speed things up, calls 'coverage' and 'coveralls' only on one of the platforms.
