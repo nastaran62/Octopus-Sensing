@@ -1,0 +1,22 @@
+environment:
+    matrix:
+        - PYTHON: "C:\\Python37-x64"
+          WHEEL_PLATFORM: win_amd64
+          CONDA: "C:\\Miniconda38-x64"
+        - PYTHON: "C:\\Python38-x64"
+          WHEEL_PLATFORM: win_amd64
+          CONDA: "C:\\Miniconda38-x64"
+
+install:
+    - set "PATH=%PYTHON%;%PYTHON%\Scripts;%CONDA%;%PATH%"
+    - call %CONDA%\Scripts\activate.bat
+    - python -m pip install wheel poetry
+    # Installing 'portaudio' using 'conda' rather than trying to compile it.
+    - conda install -y -c anaconda portaudio
+
+build: off
+
+test_script:
+    - call %CONDA%\Scripts\activate.bat
+    - python -m poetry install -v
+    - python -m poetry pytest --full-trace --showlocals
