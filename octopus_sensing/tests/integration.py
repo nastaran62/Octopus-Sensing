@@ -119,8 +119,8 @@ def mocked():
 def test_system_health(mocked):
     '''Runs the whole system to roughly check everything is working together.'''
     # To ensure mocks are applied, we import these modules here.
-    import octopus_sensing.devices.openbci.openbci_streaming as openbci_streaming
-    import octopus_sensing.devices.shimmer3.shimmer3_streaming as shimmer3_streaming
+    import octopus_sensing.devices.openbci_streaming as openbci_streaming
+    import octopus_sensing.devices.shimmer3_streaming as shimmer3_streaming
     from octopus_sensing.device_coordinator import DeviceCoordinator
     from octopus_sensing.common.message_creators import start_message, stop_message, terminate_message
     from octopus_sensing.monitoring_endpoint import MonitoringEndpoint

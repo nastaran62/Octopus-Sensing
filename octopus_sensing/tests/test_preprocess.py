@@ -13,8 +13,8 @@
 # If not, see <https://www.gnu.org/licenses/>.
 import os
 
-from octopus_sensing.devices.shimmer3.shimmer3_streaming import Shimmer3Streaming
-from octopus_sensing.devices.openbci.openbci_streaming import OpenBCIStreaming
+from octopus_sensing.devices.shimmer3_streaming import Shimmer3Streaming
+from octopus_sensing.devices.openbci_streaming import OpenBCIStreaming
 from octopus_sensing.devices.common import SavingModeEnum
 from octopus_sensing.preprocessing.preprocess_devices import preprocess_devices
 from octopus_sensing.device_coordinator import DeviceCoordinator

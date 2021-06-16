@@ -15,8 +15,8 @@
 import os
 import pathlib
 from octopus_sensing.device_coordinator import DeviceCoordinator
-from octopus_sensing.devices.openbci.openbci_streaming import OpenBCIStreaming
-from octopus_sensing.devices.shimmer3.shimmer3_streaming import Shimmer3Streaming
+from octopus_sensing.devices.openbci_streaming import OpenBCIStreaming
+from octopus_sensing.devices.shimmer3_streaming import Shimmer3Streaming
 from octopus_sensing.preprocessing.openbci import openbci_preprocess
 from octopus_sensing.preprocessing.shimmer3 import shimmer3_preprocess
 

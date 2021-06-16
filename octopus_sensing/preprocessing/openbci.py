@@ -163,12 +163,3 @@ def clean_eeg(data, channel_names: List[str] = None,
     preprocessing.filter_data(low_frequency=low_frequency, high_frequency=high_frequency)
     preprocessed_data = preprocessing.get_data()
     return np.transpose(preprocessed_data)
-
-
-if __name__ == "__main__":
-    in_path = "/media/nastaran/HDD/projects/exp1_octopus/collected_data/conversation/p20/eeg"
-    f_name = "OpenBCI-20-01.csv"
-    out_path = in_path
-    ch_names = ["Fp1", "Fp2", "F7", "F3", "F4", "F8", "T3", "C3",
-                "C4", "T4", "T5", "P3", "P4", "T6", "O1", "O2"]
-    openbci_preprocess(in_path, f_name, out_path, channels=ch_names)

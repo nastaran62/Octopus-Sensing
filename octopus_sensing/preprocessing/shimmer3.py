@@ -114,6 +114,7 @@ def shimmer3_preprocess(input_path: str, file_name: str, output_path: str,
 
 def clean_gsr(data, sampling_rate, low_pass=0.1, high_pass=15):
     '''
+    Removes high frequency and rapid transient noises
     '''
     nyqs = sampling_rate * 0.5
     # Removing high frequency noises
@@ -126,6 +127,9 @@ def clean_gsr(data, sampling_rate, low_pass=0.1, high_pass=15):
 
 
 def clean_ppg(data, sampling_rate, low_pass=0.7, high_pass=2.5):
+    '''
+    Removes high frequency noises
+    '''
     filtered = hp.filter_signal(data,
                                 [low_pass, high_pass],
                                 sample_rate=sampling_rate,
@@ -133,10 +137,3 @@ def clean_ppg(data, sampling_rate, low_pass=0.7, high_pass=2.5):
                                 filtertype='bandpass')
 
     return filtered
-
-
-if __name__ == "__main__":
-    in_path = "/media/nastaran/HDD/projects/exp1_octopus/collected_data/conversation/p20/shimmer"
-    f_name = "Shimmer-20-01.csv"
-    out_path = in_path
-    shimmer3_preprocess(in_path, f_name, out_path)
