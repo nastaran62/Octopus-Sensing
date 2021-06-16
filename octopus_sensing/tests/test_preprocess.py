@@ -161,21 +161,8 @@ def check_files(preprocess_path, expected_path):
 
     expected_files.sort()
     preprocess_files.sort()
-    i = 0
     for file in preprocess_files:
-        # Compare file name
-        assert file == expected_files[i]
-
         # Compare file content
-        preprocess_file = open(os.path.join(preprocess_path, file), 'r')
-        expected_file = open(os.path.join(expected_path, file), 'r')
-        file_one = preprocess_file.readlines()
-        file_two = expected_file.readlines()
-        preprocess_file.close()
-        expected_file.close()
-        j = 0
-        for line in file_one:
-            assert line == file_two[j]
-            j += 1
-
-        i += 1
+        actual_file = open(os.path.join(preprocess_path, file), 'r').read()
+        expected_file = open(os.path.join(expected_path, file), 'r').read()
+        assert actual_file == expected_file
