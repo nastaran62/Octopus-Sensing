@@ -21,9 +21,8 @@ import numpy as np
 
 from octopus_sensing.common.message_creators import MessageType
 from octopus_sensing.devices.monitored_device import MonitoredDevice
+from octopus_sensing.devices.common import SavingModeEnum
 
-CONTINIOUS_SAVING_MODE = 0
-SEPARATED_SAVING_MODE = 1
 
 uVolts_per_count = (4500000)/24/(2**23-1)
 accel_G_per_count = 0.002 / (2**4)  # G/count
@@ -33,35 +32,42 @@ class OpenBCIStreaming(MonitoredDevice):
     def __init__(self,
                  daisy=True,
                  channels_order=None,
-                 saving_mode=CONTINIOUS_SAVING_MODE,
+                 saving_mode=SavingModeEnum.CONTINIOUS_SAVING_MODE,
                  **kwargs):
         super().__init__(**kwargs)
 
         self._saving_mode = saving_mode
         self._stream_data = []
-        self._board = pyOpenBCI.OpenBCICyton(daisy=daisy)
+        self._board = self._inintialize_board(daisy)
         self._trigger = None
         self._experiment_id = None
 
-        self.output_path = os.path.join(self.output_path, "eeg")
-        os.makedirs(self.output_path, exist_ok=True)
+        self.output_path = self._make_output_path()
 
         if channels_order is None:
             if daisy is True:
-                self.channels_order = \
+                self.channels = \
                     ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9",
                      "ch10", "ch11", "ch12", "ch13", "ch14", "ch15", "ch16"]
             else:
-                self.channels_order = \
+                self.channels = \
                     ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8"]
         else:
-            self.channels_order = channels_order
+            self.channels = channels_order
             if daisy is True:
-                if len(self.channels_order) != 16:
+                if len(self.channels) != 16:
                     raise "The number of channels in channels_order should be 16"
             elif daisy is False:
-                if len(self.channels_order) != 8:
+                if len(self.channels) != 8:
                     raise "The number of channels in channels_order should be 8"
+
+    def _make_output_path(self):
+        output_path = os.path.join(self.output_path, "eeg")
+        os.makedirs(output_path, exist_ok=True)
+        return output_path
+
+    def _inintialize_board(self, daisy):
+        return pyOpenBCI.OpenBCICyton(daisy=daisy)
 
     def _run(self):
         threading.Thread(target=self._stream_loop).start()
@@ -74,7 +80,7 @@ class OpenBCIStreaming(MonitoredDevice):
                 self.__set_trigger(message)
                 self._experiment_id = message.experiment_id
             elif message.type == MessageType.STOP:
-                if self._saving_mode == SEPARATED_SAVING_MODE:
+                if self._saving_mode == SavingModeEnum.SEPARATED_SAVING_MODE:
                     self._experiment_id = message.experiment_id
                     file_name = \
                         "{0}/{1}-{2}-{3}.csv".format(self.output_path,
@@ -86,7 +92,7 @@ class OpenBCIStreaming(MonitoredDevice):
                     self._experiment_id = message.experiment_id
                     self.__set_trigger(message)
             elif message.type == MessageType.TERMINATE:
-                if self._saving_mode == CONTINIOUS_SAVING_MODE:
+                if self._saving_mode == SavingModeEnum.CONTINIOUS_SAVING_MODE:
                     file_name = \
                         "{0}/{1}-{2}.csv".format(self.output_path,
                                                  self.name,
@@ -125,7 +131,7 @@ class OpenBCIStreaming(MonitoredDevice):
         if not os.path.exists(file_name):
             csv_file = open(file_name, 'a')
             header = []
-            header.extend(self.channels_order)
+            header.extend(self.channels)
             header.extend(["acc-x", "acc-y", "acc-z"])
             header.extend(["sample_id", "time stamp", "trigger"])
             writer = csv.writer(csv_file)
@@ -143,3 +149,12 @@ class OpenBCIStreaming(MonitoredDevice):
         # Last three seconds
         # FIXME: hard-coded data collection rate
         return self._stream_data[-1 * 3 * 128:]
+
+    def get_saving_mode(self):
+        return self._saving_mode
+
+    def get_channels(self):
+        return self.channels
+
+    def get_output_path(self):
+        return self.output_path

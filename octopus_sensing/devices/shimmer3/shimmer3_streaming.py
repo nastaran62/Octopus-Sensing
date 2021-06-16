@@ -21,10 +21,7 @@ import struct
 import serial
 from octopus_sensing.devices.monitored_device import MonitoredDevice
 from octopus_sensing.common.message_creators import MessageType
-
-
-CONTINIOUS_SAVING_MODE = 0
-SEPARATED_SAVING_MODE = 1
+from octopus_sensing.devices.common import SavingModeEnum
 
 
 class Shimmer3Streaming(MonitoredDevice):
@@ -32,7 +29,7 @@ class Shimmer3Streaming(MonitoredDevice):
     Manages Shimmer3 streaming
     '''
 
-    def __init__(self, saving_mode=CONTINIOUS_SAVING_MODE, **kwargs):
+    def __init__(self, saving_mode=SavingModeEnum.CONTINIOUS_SAVING_MODE, **kwargs):
         super().__init__(**kwargs)
 
         self._saving_mode = saving_mode
@@ -40,49 +37,12 @@ class Shimmer3Streaming(MonitoredDevice):
         self._inintialize_connection()
         self._trigger = None
         self._break_loop = False
+        self.output_path = self._make_output_path()
 
-        self.output_path = os.path.join(self.output_path, "shimmer")
-        os.makedirs(self.output_path, exist_ok=True)
-
-    def _run(self):
-        '''
-        Listening to the message queue and manage messages
-        '''
-        loop_thread = threading.Thread(target=self._stream_loop)
-        loop_thread.start()
-
-        while True:
-            message = self.message_queue.get()
-            if message is None:
-                continue
-            if message.type == MessageType.START:
-                print("Shimmer start")
-                self._experiment_id = message.experiment_id
-                self.__set_trigger(message)
-            elif message.type == MessageType.STOP:
-                if self._saving_mode == SEPARATED_SAVING_MODE:
-                    self._experiment_id = message.experiment_id
-                    file_name = \
-                        "{0}/{1}-{2}-{3}.csv".format(self.output_path,
-                                                     self.name,
-                                                     self._experiment_id,
-                                                     message.stimulus_id)
-                    self._save_to_file(file_name)
-                else:
-                    print("Shimmer stop")
-                    self._experiment_id = message.experiment_id
-                    self.__set_trigger(message)
-            elif message.type == MessageType.TERMINATE:
-                if self._saving_mode == CONTINIOUS_SAVING_MODE:
-                    file_name = \
-                        "{0}/{1}-{2}.csv".format(self.output_path,
-                                                 self.name,
-                                                 self._experiment_id)
-                    self._save_to_file(file_name)
-                break
-
-        self._break_loop = True
-        loop_thread.join()
+    def _make_output_path(self):
+        output_path = os.path.join(self.output_path, "shimmer")
+        os.makedirs(output_path, exist_ok=True)
+        return output_path
 
     def _inintialize_connection(self):
         '''
@@ -160,6 +120,46 @@ class Shimmer3Streaming(MonitoredDevice):
         ack = struct.pack('B', 0xff)
         while ddata != ack:
             ddata = self._serial.read(1)
+
+    def _run(self):
+        '''
+        Listening to the message queue and manage messages
+        '''
+        loop_thread = threading.Thread(target=self._stream_loop)
+        loop_thread.start()
+
+        while True:
+            message = self.message_queue.get()
+            if message is None:
+                continue
+            if message.type == MessageType.START:
+                print("Shimmer start")
+                self._experiment_id = message.experiment_id
+                self.__set_trigger(message)
+            elif message.type == MessageType.STOP:
+                if self._saving_mode == SavingModeEnum.SEPARATED_SAVING_MODE:
+                    self._experiment_id = message.experiment_id
+                    file_name = \
+                        "{0}/{1}-{2}-{3}.csv".format(self.output_path,
+                                                     self.name,
+                                                     self._experiment_id,
+                                                     message.stimulus_id)
+                    self._save_to_file(file_name)
+                else:
+                    print("Shimmer stop")
+                    self._experiment_id = message.experiment_id
+                    self.__set_trigger(message)
+            elif message.type == MessageType.TERMINATE:
+                if self._saving_mode == SavingModeEnum.CONTINIOUS_SAVING_MODE:
+                    file_name = \
+                        "{0}/{1}-{2}.csv".format(self.output_path,
+                                                 self.name,
+                                                 self._experiment_id)
+                    self._save_to_file(file_name)
+                break
+
+        self._break_loop = True
+        loop_thread.join()
 
     def __set_trigger(self, message):
         '''
@@ -286,3 +286,9 @@ class Shimmer3Streaming(MonitoredDevice):
         # Last three seconds
         # FIXME: hard-coded data collection rate
         return self._stream_data[-1 * 3 * 128:]
+
+    def get_saving_mode(self):
+        return self._saving_mode
+
+    def get_output_path(self):
+        return self.output_path

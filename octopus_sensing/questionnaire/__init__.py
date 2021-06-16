@@ -82,24 +82,24 @@ class Questionnaire(Gtk.Window):
             row = question.render(grid, i)
             i += row
         done_button = Gtk.Button.new_with_label("Done")
-        done_button.connect("clicked", self.on_click_done_button)
+        done_button.connect("clicked", self._on_click_done_button)
         done_button.get_child().set_markup("<span font_desc='Tahoma 14'>Done</span>")
         grid.attach(done_button, 0, i, 1, 1)
         self.connect("destroy", Gtk.main_quit)
         self.show_all()
         Gtk.main()
 
-    def on_click_done_button(self, button: Gtk.Button) -> None:
+    def _on_click_done_button(self, button: Gtk.Button) -> None:
         '''
         Saves answers and close the questionnaire
 
         @param button: by clicking this button, this method will call
         @type button: Gtk.Button
         '''
-        self.save_answers()
+        self._save_answers()
         self.destroy()
 
-    def save_answers(self) -> None:
+    def _save_answers(self) -> None:
         '''
         Saves answers
         '''

@@ -68,6 +68,15 @@ class DeviceCoordinator:
         device_id = "device_{0}".format(self.__device_counter)
         return device_id
 
+    def get_devices(self) -> List[Device]:
+        '''
+        Return a list of added devices
+
+        @rtype: list(device)
+        @return a list of added devices
+        '''
+        return list(self.__devices.values())
+
     def add_device(self, device: Device) -> None:
         '''
         Adds new device to the coordinator and starts it

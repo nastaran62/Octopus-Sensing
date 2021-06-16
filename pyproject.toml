@@ -14,7 +14,7 @@ repository = "https://github.com/nastaran62/octopus-sensing"
 keywords = ["sensors", "eeg", "gsr", "recorder"]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4.0"
+python = ">=3.7.1,<4.0"
 sounddevice = "^0.4.0"
 scipy = "^1.5.2"
 opencv-python = "^4.4.0"
@@ -31,6 +31,9 @@ bitstring = "^3.1.7"
 msgpack = "^1.0.0"
 # pyaudio doesn't support windows
 pyaudio = { version = "^0.2.11", markers = "os_name != 'nt'" }
+pandas = "^1.2.4"
+mne = "^0.23.0"
+heartpy = "^1.2.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

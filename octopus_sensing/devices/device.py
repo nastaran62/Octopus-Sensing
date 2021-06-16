@@ -14,7 +14,7 @@
 
 from typing import Optional
 import multiprocessing
-import multiprocessing.queues
+from multiprocessing.queues import Queue
 
 
 class Device(multiprocessing.Process):
@@ -22,7 +22,7 @@ class Device(multiprocessing.Process):
 
     def __init__(self, name: Optional[str] = None, output_path: str = "output"):
         super().__init__(name=name)
-        self.message_queue: Optional[multiprocessing.queues.Queue] = None
+        self.message_queue: Optional[Queue] = None
         self.subject_id: Optional[str] = None
         self.stimulus_id: Optional[str] = None
         self.output_path: str = output_path
@@ -34,10 +34,16 @@ class Device(multiprocessing.Process):
         '''The subclass shouldn't implement 'run', but '_run' instead.'''
         raise NotImplementedError()
 
-    def set_queue(self, queue: multiprocessing.queues.Queue) -> None:
+    def set_queue(self, queue: Queue) -> None:
         '''
         Sets message queue for the device
 
         @param queue: a queue that will be used for message passing
         '''
         self.message_queue = queue
+
+    def get_name(self) -> str:
+        '''
+        Returns device name
+        '''
+        return self.name
