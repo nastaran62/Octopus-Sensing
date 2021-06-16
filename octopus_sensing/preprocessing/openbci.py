@@ -25,7 +25,7 @@ def openbci_preprocess(input_path: str, file_name: str, output_path: str,
                        channels: List[str],
                        saving_mode: int = SavingModeEnum.CONTINIOUS_SAVING_MODE,
                        sampling_rate: int = 128,
-                       signal_preprocess: str = True):
+                       signal_preprocess: bool = True):
     '''
     Split openbci recorded files based on markers and resample data to a
     constant sampling rate
@@ -109,7 +109,7 @@ def openbci_preprocess(input_path: str, file_name: str, output_path: str,
             data_frame.to_csv(output_file_path)
             i += 1
     else:
-        raise "Saving mode is incorrect"
+        raise Exception("Saving mode is incorrect")
 
 
 class EegPreprocessing():
@@ -147,7 +147,7 @@ class EegPreprocessing():
         print("end filtering")
 
 
-def clean_eeg(data, channel_names: Optional[str] = None,
+def clean_eeg(data, channel_names: List[str] = None,
               low_frequency: int = 1,
               high_frequency: int = 45,
               sampling_rate: Optional[int] = 128):

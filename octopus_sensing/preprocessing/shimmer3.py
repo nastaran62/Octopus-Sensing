@@ -25,7 +25,7 @@ from octopus_sensing.devices.common import SavingModeEnum
 def shimmer3_preprocess(input_path: str, file_name: str, output_path: str,
                         saving_mode: int = SavingModeEnum.CONTINIOUS_SAVING_MODE,
                         sampling_rate: int = 128,
-                        signal_preprocess: str = True):
+                        signal_preprocess: bool = True):
     '''
     Split openbci recorded files based on markers and resample data to a
     constant sampling rate
@@ -109,7 +109,7 @@ def shimmer3_preprocess(input_path: str, file_name: str, output_path: str,
             np.savetxt(ppg_file_path, cleaned_ppg)
             i += 1
     else:
-        raise "Saving mode is incorrect"
+        raise Exception("Saving mode is incorrect")
 
 
 def clean_gsr(data, sampling_rate, low_pass=0.1, high_pass=15):
