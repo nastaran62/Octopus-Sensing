@@ -13,7 +13,6 @@ docs_build/
 *.jpeg
 *.png
 *.mp4
-*.csv
 *.edf
 *.log
 *.wav
