@@ -1,3 +1,19 @@
+# This file is part of Octopus Sensing <https://octopus-sensing.nastaran-saffar.me/>
+# Copyright © Nastaran Saffaryazdi 2020
+#
+# Octopus Sensing is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software Foundation,
+#  either version 3 of the License, or (at your option) any later version.
+#
+# Octopus Sensing is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with Foobar.
+# If not, see <https://www.gnu.org/licenses/>.
+
+from typing import Optional, Any
+
 from octopus_sensing.common.message import Message
 
 
@@ -7,7 +23,7 @@ class MessageType():
     TERMINATE = "TERMINATE"
 
 
-def start_message(experiment_id: str, stimulus_id: int, payload=None):
+def start_message(experiment_id: str, stimulus_id: str, payload=None):
     '''
     Creates a message to inform device of starting the stimulus
 
@@ -19,15 +35,13 @@ def start_message(experiment_id: str, stimulus_id: int, payload=None):
     @rtype: Message
     @return: a start message
     '''
-    message = \
-        Message(MessageType.START,
-                payload,
-                experiment_id=experiment_id,
-                stimulus_id=stimulus_id)
-    return message
+    return Message(MessageType.START,
+                   payload,
+                   experiment_id=experiment_id,
+                   stimulus_id=stimulus_id)
 
 
-def stop_message(experiment_id: str, stimulus_id: int):
+def stop_message(experiment_id: str, stimulus_id: str):
     '''
     Creates a message to inform device of stopping the stimulus
 
@@ -37,12 +51,10 @@ def stop_message(experiment_id: str, stimulus_id: int):
     @rtype: Message
     @return: a stop message
     '''
-    message = \
-        Message(MessageType.STOP,
-                None,
-                experiment_id=experiment_id,
-                stimulus_id=stimulus_id)
-    return message
+    return Message(MessageType.STOP,
+                   None,
+                   experiment_id=experiment_id,
+                   stimulus_id=stimulus_id)
 
 
 def terminate_message():
@@ -52,7 +64,5 @@ def terminate_message():
     @rtype: Message
     @return: a terminate message
     '''
-    message = \
-        Message(MessageType.TERMINATE,
-                None)
-    return message
+    return Message(MessageType.TERMINATE,
+                   None)

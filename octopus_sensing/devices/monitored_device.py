@@ -14,7 +14,7 @@
 
 import sys
 import pickle
-import multiprocessing
+import multiprocessing.queues
 import threading
 import traceback
 from typing import List, Any

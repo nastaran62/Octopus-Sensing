@@ -30,18 +30,19 @@ QueueType = multiprocessing.queues.Queue
 
 class MonitoringCache:
     def __init__(self):
-        self._time = time.time()
+        self._time = time.time_ns()
         self._cached_data = []
 
     def get_cache(self):
         '''Returns None if cache is not available or expired'''
-        if time.time() - self._time > 100:
+        # 100 ms
+        if time.time_ns() - self._time > 100000000:
             return None
         return self._cached_data
 
     def cache(self, data: List[Any]):
         self._cached_data = data
-        self._time = time.time()
+        self._time = time.time_ns()
 
 
 class DeviceCoordinator:

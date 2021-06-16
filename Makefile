@@ -14,10 +14,14 @@ mypy: ## Static type checking
 	poetry run mypy octopus_sensing
 
 test: ## Runs tests
-	poetry run pytest --full-trace --showlocals
+# Integration test mocks lots of modules which intefer with other tests. So, we're running it separately.
+	poetry run pytest --full-trace --showlocals octopus_sensing/
+	poetry run pytest --full-trace --showlocals octopus_sensing/tests/integration.py
 
 test-coverage: ## Runs tests and reports coverage
-	poetry run coverage run -m pytest --full-trace --showlocals
+# See 'test' comment for why we're running two commands.
+	poetry run coverage run -m pytest --full-trace --showlocals octopus_sensing/
+	poetry run coverage run --append -m pytest --full-trace --showlocals octopus_sensing/tests/integration.py
 	poetry run coverage report
 
 # TODO: PyPi publish

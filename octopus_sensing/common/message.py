@@ -12,12 +12,17 @@
 # You should have received a copy of the GNU General Public License along with Octopus Sensing.
 # If not, see <https://www.gnu.org/licenses/>.
 
+from typing import Optional, Any
+
+
 class Message():
     '''
     Message class
     '''
-    def __init__(self, message_type, payload,
-                 experiment_id=None, stimulus_id=None):
+
+    def __init__(self, message_type: str, payload: Any,
+                 experiment_id: Optional[str] = None,
+                 stimulus_id: Optional[str] = None):
         '''
         Initializes the message object
 
