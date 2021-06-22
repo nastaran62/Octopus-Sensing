@@ -16,3 +16,4 @@ docs_build/
 *.edf
 *.log
 *.wav
+*.csv

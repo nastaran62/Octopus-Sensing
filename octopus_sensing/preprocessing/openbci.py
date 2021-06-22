@@ -67,7 +67,7 @@ def openbci_preprocess(input_path: str, file_name: str, output_path: str,
             preprocessed_data = resampled_data
             # convert array into dataframe
         data_frame = pd.DataFrame(preprocessed_data, columns=channels)
-        data_frame.to_csv(output_file_path)
+        data_frame.to_csv(output_file_path, index=False)
 
     elif saving_mode == SavingModeEnum.CONTINIOUS_SAVING_MODE:
         if len(channels) == 8:
@@ -106,7 +106,7 @@ def openbci_preprocess(input_path: str, file_name: str, output_path: str,
             data_frame = pd.DataFrame(preprocessed_data, columns=channels)
 
             # save the dataframe as a csv file
-            data_frame.to_csv(output_file_path)
+            data_frame.to_csv(output_file_path, index=False)
             i += 1
     else:
         raise Exception("Saving mode is incorrect")
@@ -126,9 +126,10 @@ class EegPreprocessing():
 
         self.__info = mne.create_info(channel_names,
                                       sampling_rate,
-                                      channel_types,
-                                      montage='standard_1020')
+                                      channel_types)
+        montage = mne.channels.make_standard_montage('standard_1020')
         self._mne_raw = mne.io.RawArray(channel_data, self.__info)
+        self._mne_raw.set_montage(montage, match_case=False)
         self._mne_raw.load_data()
 
     def get_data(self):

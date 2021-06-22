@@ -17,7 +17,6 @@ import heartpy as hp
 from scipy import signal
 import numpy as np
 
-
 from octopus_sensing.preprocessing.utils import load_all_trials, resample, load_all_samples
 from octopus_sensing.devices.common import SavingModeEnum
 
